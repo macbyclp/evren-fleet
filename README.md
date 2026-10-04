@@ -78,6 +78,31 @@ python $E fleet jobs.jsonl -c 8 -o out            # paralel
 scripts/evren-agent.sh /yol/lane glm-5.3 "görev" 600   # ajan lane'i
 ```
 
+## Ölçümler
+
+2026-10-04'te gerçek bir EVREN hesabıyla ölçüldü (`benchmark/`). Beş görev (mantık, kod yazma, hata düzeltme, JSON çıkarma, ~10K tokenlık uzun bağlamda iğne arama) × 6 sohbet modeli × 2 tekrar; doğruluk otomatik testle kontrol edildi. Ham veri: [`benchmark/results.json`](benchmark/results.json).
+
+**Maliyet:** o tarihte tüm modellerde fiyat 0 CR (`free_until: 2026-11-01`). Gerçek sınır günlük token kotası; tüm benchmark ~97,6 bin token harcadı.
+
+![Medyan yanıt süresi](benchmark/latency.svg)
+
+![Çağrı başına çıktı tokenı](benchmark/tokens.svg)
+
+![Düşünme çabası etkisi](benchmark/effort.svg)
+
+![Doğrudan ask ve ajan lane'i](benchmark/agent_vs_direct.svg)
+
+**Bulgular**
+- Doğruluk 59/60. Tek hata `deepseek-v4.1-flash`'ın mantık sorusunda çıktı; 5 tekrarda yeniden çıkmadı, nedeni bilinmiyor.
+- `deepseek-v4-flash` en hızlısı (medyan 0,5 sn); `glm-5.3` en yavaşı (23,9 sn).
+- Çıktı tokenlarının çoğu düşünme tokenı (`mimo-v2.6-pro` dışında yaklaşık %90). `reasoning_effort` bu kolay görevlerde token sayısını belirgin değiştirmedi.
+- Paralellik: 12 kısa iş sıralı 21,1 sn, paralel (`fleet`) 2,0 sn (~10×).
+- Ajan lane'i pahalıdır: aynı hata düzeltme `ask` ile 511 token, opencode lane'inde 5 adımda 11,4 bin yeni + 53 bin önbellekten okunan token (yeni token olarak ~22×). Basit işte `ask`, dosya düzenleme gerekince lane kullan.
+
+**Sınırlar:** hücre başına yalnızca 2 tekrar ve kolay görevler; altı model aynı anda koşturulduğu için süreler paylaşılan yükten etkilenmiş olabilir; ajan ölçümü tek model/tek görev; orkestratörün (Claude) kendi token tasarrufu ölçülmedi. Zor görevlerde fark farklı olabilir.
+
+Yeniden üretmek için: `python benchmark/bench.py` (anahtar gerekir; `bench_results.json` yazar), grafikler için `python benchmark/charts.py` (`results.json`'dan SVG üretir), ajan token ölçümü için `python benchmark/agent_tokens.py lane.log`.
+
 ## Güvenlik
 
 - `evren.py` yalnız metin döndürür. `evren-agent.sh` opencode'u başsız çalıştırır; **opencode sandbox değildir**, `edit` ve `bash` izin sormadan çalışır. Yazan lane'leri izole git worktree'de çalıştır.

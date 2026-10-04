@@ -11,17 +11,13 @@
 | Metin işçileri | Tek soru, ikinci görüş, N işi paralel (fleet) | `scripts/evren.py` (yalnız Python stdlib) |
 | Ajan lane'leri | Dosya okuyan/düzenleyen/komut çalıştıran işçi | `scripts/evren-agent.sh` + [opencode](https://opencode.ai) |
 
-## Ajanla otomatik kurulum
+## En kolay kurulum: bir mesaj
 
-Claude Code, Codex, opencode gibi bir ajana şunu yapıştır:
+1. [Claude Code](https://claude.com/claude-code), Codex veya opencode gibi bir ajanı herhangi bir klasörde aç.
+2. Aşağıdaki mesajı yapıştır.
+3. Ajan sorunca EVREN API anahtarını kendin dosyaya yaz ve kullanım şartlarını kendin onayla.
 
-```text
-https://github.com/macbyclp/evren-fleet deposunu kur: README.md'deki "Ajanlar için kurulum" bölümünü adım adım uygula.
-API anahtarını benden sohbette isteme; dosyaya yazdığımı söyleyene kadar bekle.
-Kullanım şartlarını ben "kabul ediyorum" demeden kabul etme.
-Mevcut dosyaların üzerine yazma; başarısız adımı körlemesine tekrarlama.
-Bitince neyin doğrulandığını ve neyin doğrulanamadığını dürüstçe raporla.
-```
+> https://github.com/macbyclp/evren-fleet deposunu kur: README.md'deki "Ajanlar için kurulum" bölümünü adım adım uygula. API anahtarını benden sohbette isteme, dosyaya yazdığımı söyleyene kadar bekle; kullanım şartlarını ben "kabul ediyorum" demeden kabul etme. Mevcut dosyaların üzerine yazma. Sonunda neyin doğrulandığını ve neyin doğrulanamadığını birlikte kontrol edelim.
 
 ## Ajanlar için kurulum
 
